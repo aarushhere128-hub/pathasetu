@@ -44,7 +44,13 @@
 
     user-select:none;
 }
+.logo-patha{
+    color: var(--primary);
+}
 
+.logo-setu{
+    color: var(--accent);
+}
 .nav-links{
 
     display:flex;
@@ -156,13 +162,18 @@
 
     border-radius:50%;
 
-    background:rgba(37,99,235,.08);
+    background:linear-gradient(
+        135deg,
+        rgba(124,58,237,.12),
+        rgba(251,191,36,.20)
+    );
 
     font-size:2rem;
 
-    color:var(--primary);
-}
+    color:var(--accent);
 
+    border:1px solid rgba(251,191,36,.30);
+}
 
 /* ==========================================================
    SUBJECT CARD
@@ -357,13 +368,9 @@
 
 .footer{
 
-    margin-top:5rem;
+    background:#2E1065;
 
-    padding:2rem 0;
-
-    background:var(--surface);
-
-    border-top:1px solid var(--border-light);
+    color:white;
 }
 
 .footer-content{
