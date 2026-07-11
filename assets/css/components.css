@@ -1,1 +1,444 @@
+/* ==========================================================
+   PathaSetu Components
+   ========================================================== */
 
+
+/* ==========================================================
+   NAVBAR
+   ========================================================== */
+
+.navbar{
+
+    position:sticky;
+    top:0;
+    z-index:var(--z-navbar);
+
+    width:100%;
+    height:var(--navbar-height);
+
+    background:var(--surface);
+
+    box-shadow:var(--shadow-sm);
+}
+
+.nav-container{
+
+    width:min(90%, var(--container-width));
+    height:100%;
+
+    margin:auto;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+
+    font-size:1.7rem;
+    font-weight:700;
+
+    color:var(--primary);
+
+    cursor:pointer;
+
+    user-select:none;
+}
+
+.nav-links{
+
+    display:flex;
+    align-items:center;
+    gap:1rem;
+}
+
+
+/* ==========================================================
+   PROFILE BUTTON
+   ========================================================== */
+
+.profile-btn{
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:white;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:var(--transition-fast);
+}
+
+.profile-btn:hover{
+
+    transform:scale(1.05);
+}
+
+
+/* ==========================================================
+   PROFILE DROPDOWN
+   ========================================================== */
+
+.profile-dropdown{
+
+    position:absolute;
+
+    top:85px;
+    right:5%;
+
+    width:250px;
+
+    background:var(--surface);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-lg);
+
+    padding:1.25rem;
+
+    display:none;
+
+    z-index:var(--z-dropdown);
+}
+
+.profile-dropdown.active{
+
+    display:block;
+}
+
+
+/* ==========================================================
+   FEATURE CARD
+   ========================================================== */
+
+.feature-card{
+
+    background:var(--surface);
+
+    border-radius:var(--radius-lg);
+
+    padding:2rem;
+
+    text-align:center;
+
+    box-shadow:var(--shadow-sm);
+
+    transition:var(--transition-normal);
+}
+
+.feature-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:var(--shadow-md);
+}
+
+.feature-icon{
+
+    width:70px;
+    height:70px;
+
+    margin:auto auto 1rem;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:50%;
+
+    background:rgba(37,99,235,.08);
+
+    font-size:2rem;
+
+    color:var(--primary);
+}
+
+
+/* ==========================================================
+   SUBJECT CARD
+   ========================================================== */
+
+.subject-card{
+
+    background:var(--surface);
+
+    padding:2rem;
+
+    border-radius:var(--radius-lg);
+
+    cursor:pointer;
+
+    transition:var(--transition-normal);
+
+    box-shadow:var(--shadow-sm);
+}
+
+.subject-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:var(--shadow-md);
+
+    border:2px solid var(--primary);
+}
+
+
+/* ==========================================================
+   CHAPTER CARD
+   ========================================================== */
+
+.chapter-card{
+
+    background:var(--surface);
+
+    padding:1.25rem;
+
+    border-radius:var(--radius-md);
+
+    margin-bottom:1rem;
+
+    cursor:pointer;
+
+    transition:var(--transition-fast);
+
+    border:1px solid transparent;
+}
+
+.chapter-card:hover{
+
+    border-color:var(--primary);
+
+    background:var(--surface-secondary);
+}
+
+
+/* ==========================================================
+   RESOURCE CARD
+   ========================================================== */
+
+.resource-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:var(--surface);
+
+    padding:1rem 1.25rem;
+
+    border-radius:var(--radius-md);
+
+    margin-bottom:1rem;
+
+    box-shadow:var(--shadow-sm);
+
+    transition:var(--transition-fast);
+}
+
+.resource-card:hover{
+
+    box-shadow:var(--shadow-md);
+}
+
+
+/* ==========================================================
+   MODAL
+   ========================================================== */
+
+.modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:var(--z-modal);
+}
+
+.modal-overlay.active{
+
+    display:flex;
+}
+
+.modal{
+
+    width:min(500px,90%);
+
+    background:var(--surface);
+
+    border-radius:var(--radius-lg);
+
+    padding:2rem;
+
+    box-shadow:var(--shadow-lg);
+
+    animation:fadeUp .25s ease;
+}
+
+
+/* ==========================================================
+   DROPDOWN
+   ========================================================== */
+
+.dropdown{
+
+    background:var(--surface);
+
+    border-radius:var(--radius-md);
+
+    box-shadow:var(--shadow-sm);
+
+    overflow:hidden;
+}
+
+.dropdown-item{
+
+    padding:1rem;
+
+    cursor:pointer;
+
+    transition:var(--transition-fast);
+}
+
+.dropdown-item:hover{
+
+    background:var(--surface-secondary);
+}
+
+
+/* ==========================================================
+   BADGE
+   ========================================================== */
+
+.badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:.3rem .8rem;
+
+    border-radius:999px;
+
+    background:var(--primary-light);
+
+    color:white;
+
+    font-size:.8rem;
+
+    font-weight:600;
+}
+
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+
+.footer{
+
+    margin-top:5rem;
+
+    padding:2rem 0;
+
+    background:var(--surface);
+
+    border-top:1px solid var(--border-light);
+}
+
+.footer-content{
+
+    width:min(90%, var(--container-width));
+
+    margin:auto;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:1rem;
+}
+
+.footer-links{
+
+    display:flex;
+
+    gap:1.5rem;
+}
+
+.footer-links a{
+
+    color:var(--text-secondary);
+
+    transition:var(--transition-fast);
+}
+
+.footer-links a:hover{
+
+    color:var(--primary);
+}
+
+
+/* ==========================================================
+   ANIMATIONS
+   ========================================================== */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+        transform:translateY(15px);
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media(max-width:768px){
+
+    .nav-links{
+
+        gap:.5rem;
+    }
+
+    .footer-content{
+
+        flex-direction:column;
+        text-align:center;
+    }
+
+}
