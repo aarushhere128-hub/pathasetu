@@ -390,25 +390,29 @@
     gap:1rem;
 }
 
-.footer-links{
+.footer h3{
 
-    display:flex;
+    color:var(--accent);
+}
 
-    gap:1.5rem;
+.footer p{
+
+    color:#E5E7EB;
 }
 
 .footer-links a{
 
-    color:var(--text-secondary);
-
-    transition:var(--transition-fast);
+    color:white;
 }
 
 .footer-links a:hover{
 
-    color:var(--primary);
+    color:var(--accent);
 }
+.nav-links a:hover{
 
+    color:var(--accent);
+}
 
 /* ==========================================================
    ANIMATIONS
