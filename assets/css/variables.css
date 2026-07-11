@@ -6,36 +6,34 @@
 :root {
 
     /* ======================================================
-       BRAND COLORS
-       ====================================================== */
+   BRAND COLORS
+   ====================================================== */
 
-    --primary: #2563EB;
-    --primary-light: #60A5FA;
-    --primary-dark: #1D4ED8;
+--primary: #7C3AED;
+--primary-light: #A78BFA;
+--primary-dark: #6D28D9;
 
-    --accent: #FBBF24;
-    --accent-light: #FCD34D;
-    --accent-dark: #F59E0B;
-
-
-    /* ======================================================
-       BACKGROUNDS
-       ====================================================== */
-
-    --background: #F8FAFC;
-    --surface: #FFFFFF;
-    --surface-secondary: #F1F5F9;
+--accent: #FBBF24;
+--accent-light: #FCD34D;
+--accent-dark: #F59E0B;
 
 
-    /* ======================================================
-       TEXT
-       ====================================================== */
+/* ======================================================
+   BACKGROUNDS
+   ====================================================== */
 
-    --text-primary: #1E293B;
-    --text-secondary: #475569;
-    --text-light: #94A3B8;
-    --text-white: #FFFFFF;
+--background: #FAFAFC;
+--surface: #FFFFFF;
+--surface-secondary: #F4F4F8;
 
+
+/* ======================================================
+   TEXT
+   ====================================================== */
+
+--text-primary: #1F1F2E;
+--text-secondary: #52525B;
+--text-light: #A1A1AA;
 
     /* ======================================================
        STATUS COLORS
