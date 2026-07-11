@@ -16,7 +16,10 @@
     width:100%;
     height:var(--navbar-height);
 
-    background:var(--surface);
+   background:rgba(255,255,255,.75);
+   backdrop-filter:blur(14px);
+
+-webkit-backdrop-filter:blur(14px);
 
     box-shadow:var(--shadow-sm);
 }
@@ -129,7 +132,11 @@
 
 .feature-card{
 
-    background:var(--surface);
+    background:rgba(255,255,255,.75);
+
+backdrop-filter:blur(18px);
+
+-webkit-backdrop-filter:blur(18px);
 
     border-radius:var(--radius-lg);
 
