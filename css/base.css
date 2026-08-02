@@ -1,0 +1,105 @@
+:root {
+  --color-bg: #150E27;
+  --color-bg-soft: #1E1438;
+  --color-purple: #6C3FC5;
+  --color-purple-deep: #2E1854;
+  --color-gold: #E8B94F;
+  --color-gold-bright: #F5D77A;
+  --color-text: #F3EFFA;
+  --color-text-muted: #B6ACD1;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Sora", sans-serif;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-gold-bright);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--color-gold);
+  color: var(--color-purple-deep);
+}
+
+.btn-primary:hover {
+  background: var(--color-gold-bright);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: rgba(243, 239, 250, 0.25);
+  color: var(--color-text);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold-bright);
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 1.05rem;
+  border-radius: var(--radius-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
