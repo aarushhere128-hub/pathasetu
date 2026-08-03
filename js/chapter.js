@@ -1,13 +1,9 @@
 import { curriculum } from './curriculum-dummy.js';
-// Import your Firebase initialization instance here if modularized, 
-// or access window.db / window.auth if initialized globally in your app.
 
-// Parse query parameters from URL
 const urlParams = new URLSearchParams(window.location.search);
 const subjectId = urlParams.get('subject');
 const chapterSlug = urlParams.get('chapter');
 
-// Chapter State
 let currentChapterData = null;
 let chapterResources = [];
 
@@ -17,30 +13,42 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadChapterDetails() {
-    const subjectData = curriculum[subjectId];
+    // Find the subject inside the subjects array
+    const subjectData = curriculum.subjects.find(s => s.id === subjectId);
     if (!subjectData) {
         document.getElementById('chapter-title').innerText = "Subject Not Found";
         return;
     }
 
-    const chapterData = subjectData.chapters.find(c => c.slug === chapterSlug);
-    if (!chapterData) {
+    // Convert chapter name strings into slugs for comparison if needed, 
+    // or match directly with the chapter name/slug
+    const chapterNameDecoded = decodeURIComponent(chapterSlug).replace(/-/g, ' ');
+    const chapterDataName = subjectData.chapters.find(c => 
+        c.toLowerCase().replace(/[^a-z0-9]+/g, '-') === chapterSlug || c === chapterSlug
+    );
+
+    if (!chapterDataName) {
         document.getElementById('chapter-title').innerText = "Chapter Not Found";
         return;
     }
 
-    currentChapterData = chapterData;
+    currentChapterData = {
+        name: chapterDataName,
+        id: subjectData.chapters.indexOf(chapterDataName) + 1
+    };
 
     // Update Breadcrumbs and Headers
     document.getElementById('breadcrumb-subject').innerText = subjectData.name;
     document.getElementById('breadcrumb-subject').href = `subject.html?subject=${subjectId}`;
-    document.getElementById('breadcrumb-chapter').innerText = chapterData.name;
+    document.getElementById('breadcrumb-chapter').innerText = currentChapterData.name;
     
     document.getElementById('subject-tag').innerText = subjectData.name;
-    document.getElementById('chapter-title').innerText = chapterData.name;
-    document.getElementById('chapter-badge').innerText = `Chapter ${chapterData.id}`;
-    document.title = `${chapterData.name} - PathaSetu`;
+    document.getElementById('chapter-title').innerText = currentChapterData.name;
+    document.getElementById('chapter-badge').innerText = `Chapter ${currentChapterData.id}`;
+    document.title = `${currentChapterData.name} - PathaSetu`;
 }
+
+// ... rest of your chapter.js functions remain the same ...
 
 // Fetch resources for this specific chapter (Firestore integration point)
 async function fetchChapterResources() {
