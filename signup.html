@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — PathaSetu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/pages/auth.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="logo">Patha<span>Setu</span></a>
+</header>
+
+<main class="auth-page">
+  <div class="auth-card">
+    <p class="section-eyebrow">Get started</p>
+    <h1 class="auth-title">Create your account</h1>
+    <p class="auth-sub">Start organizing your chapters in one place — free.</p>
+
+    <form id="signup-form" class="auth-form" novalidate>
+      <label class="field">
+        <span class="field-label">Full name</span>
+        <input type="text" name="name" autocomplete="name" required>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Email</span>
+        <input type="email" name="email" autocomplete="email" required>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Password</span>
+        <input type="password" name="password" autocomplete="new-password" minlength="6" required>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Confirm password</span>
+        <input type="password" name="confirmPassword" autocomplete="new-password" minlength="6" required>
+      </label>
+
+      <p class="auth-error" id="auth-error" hidden></p>
+
+      <button type="submit" class="btn btn-primary btn-lg auth-submit" id="signup-submit">
+        Sign up
+      </button>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+  </div>
+</main>
+
+<script type="module" src="js/auth.js"></script>
+</body>
+</html>
