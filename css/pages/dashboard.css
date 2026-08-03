@@ -35,6 +35,10 @@
   z-index: 100;
 }
 
+.onboarding-overlay[hidden] {
+  display: none;
+}
+
 .onboarding-card {
   width: 100%;
   max-width: 420px;
