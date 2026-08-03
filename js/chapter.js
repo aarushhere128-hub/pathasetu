@@ -1,26 +1,25 @@
 import { curriculum } from './curriculum-dummy.js';
+// Import your Firebase initialization instance here if modularized, 
+// or access window.db / window.auth if initialized globally in your app.
 
 // Parse query parameters from URL
 const urlParams = new URLSearchParams(window.location.search);
 const subjectId = urlParams.get('subject');
 const chapterSlug = urlParams.get('chapter');
 
-// Global state for resources
-let chapterResources = [
-    { title: 'Official NCERT Textbook Chapter', type: 'pdf', url: '#' },
-    { title: 'Curated Conceptual Video Walkthrough', type: 'youtube', url: '#' },
-    { title: 'Class Handwritten Notes Scan', type: 'notes', url: '#' }
-];
+// Chapter State
+let currentChapterData = null;
+let chapterResources = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     loadChapterDetails();
-    renderResources();
+    fetchChapterResources();
 });
 
 function loadChapterDetails() {
     const subjectData = curriculum[subjectId];
     if (!subjectData) {
-        document.getElementById('chapter-title').innerText = "Subject or Chapter Not Found";
+        document.getElementById('chapter-title').innerText = "Subject Not Found";
         return;
     }
 
@@ -29,6 +28,8 @@ function loadChapterDetails() {
         document.getElementById('chapter-title').innerText = "Chapter Not Found";
         return;
     }
+
+    currentChapterData = chapterData;
 
     // Update Breadcrumbs and Headers
     document.getElementById('breadcrumb-subject').innerText = subjectData.name;
@@ -39,6 +40,21 @@ function loadChapterDetails() {
     document.getElementById('chapter-title').innerText = chapterData.name;
     document.getElementById('chapter-badge').innerText = `Chapter ${chapterData.id}`;
     document.title = `${chapterData.name} - PathaSetu`;
+}
+
+// Fetch resources for this specific chapter (Firestore integration point)
+async function fetchChapterResources() {
+    // Default fallback resources if custom ones aren't added yet
+    chapterResources = [
+        { title: `NCERT Textbook: ${currentChapterData ? currentChapterData.name : 'Chapter'}`, type: 'pdf', url: '#' },
+        { title: 'Curated Conceptual Video Walkthrough', type: 'youtube', url: '#' },
+        { title: 'Class Handwritten Notes Scan', type: 'notes', url: '#' }
+    ];
+
+    // TODO: When user is authenticated, fetch from Firestore path:
+    // /users/{userId}/subjects/{subjectId}/chapters/{chapterSlug}/resources
+    
+    renderResources();
 }
 
 // Tab Switching
@@ -146,26 +162,29 @@ window.deleteResource = function(index) {
     renderResources();
 }
 
-// AI Notes Generator Simulation
+// Dynamic AI Notes Generator per Chapter
 window.generateAiNotes = function() {
     const container = document.getElementById('ai-notes-content');
+    const chapterName = currentChapterData ? currentChapterData.name : 'this chapter';
+    
     container.innerHTML = `
-        <p class="text-primaryPurple font-semibold animate-pulse">✨ Generating custom AI exam summary...</p>
+        <p class="text-primaryPurple font-semibold animate-pulse">✨ Synthesizing AI exam notes for ${chapterName}...</p>
     `;
     setTimeout(() => {
         container.innerHTML = `
-            <p><strong>1. Core Definition & Principles:</strong> Fundamental concepts and governing laws associated with this chapter as per the latest CBSE Class 10 guidelines.</p>
-            <p><strong>2. High-Yield Formulae & Relationships:</strong> Key equations and proportional dependencies frequently tested in board examinations.</p>
-            <p><strong>3. Common Student Pitfalls:</strong> Watch out for standard sign convention errors, unit conversion mistakes, and diagram labeling oversights.</p>
+            <p><strong>1. Core Overview of ${chapterName}:</strong> High-yield concepts, definitions, and foundational principles tailored for CBSE board examinations.</p>
+            <p><strong>2. Essential Formulae & Key Terms:</strong> Critical equations and scientific terminology that appear consistently in previous year questions.</p>
+            <p><strong>3. Exam Strategy & Common Traps:</strong> Step-by-step problem-solving shortcuts and common conceptual errors to avoid.</p>
         `;
     }, 800);
 }
 
-// AI Chat Interaction Simulation
+// Chapter-Specific AI Chat
 window.sendChatMessage = function() {
     const input = document.getElementById('chat-input');
     const container = document.getElementById('chat-messages');
     const text = input.value.trim();
+    const chapterName = currentChapterData ? currentChapterData.name : 'this chapter';
 
     if(!text) return;
 
@@ -178,11 +197,11 @@ window.sendChatMessage = function() {
     input.value = '';
     container.scrollTop = container.scrollHeight;
 
-    // AI Response simulation
+    // Contextual AI Response simulation
     setTimeout(() => {
         const aiMsg = document.createElement('div');
         aiMsg.className = 'bg-primaryPurple/20 border border-primaryPurple/30 p-3.5 rounded-xl max-w-lg text-sm text-white';
-        aiMsg.innerText = `Great question regarding this chapter! To break it down simply: focus on understanding the core formula first, then apply standard step-by-step problem-solving. Let me know if you want a practice question on this topic!`;
+        aiMsg.innerText = `Regarding ${chapterName}: That's an important concept! Let's break it down step-by-step. Make sure you connect this back to the core principles outlined in your NCERT textbook. Would you like a quick practice question to test your understanding?`;
         container.appendChild(aiMsg);
         container.scrollTop = container.scrollHeight;
     }, 1000);
