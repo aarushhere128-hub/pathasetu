@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — PathaSetu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/pages/dashboard.css">
+</head>
+<body>
+
+<header class="site-header dashboard-header">
+  <a href="index.html" class="logo">Patha<span>Setu</span></a>
+  <button class="btn btn-ghost" id="logout-btn">Log out</button>
+</header>
+
+<main class="dashboard">
+
+  <!-- Onboarding overlay: shown only if board/class aren't set yet -->
+  <div class="onboarding-overlay" id="onboarding-overlay" hidden>
+    <div class="onboarding-card">
+      <p class="section-eyebrow">Just one quick thing</p>
+      <h2 class="onboarding-title">Set up your syllabus</h2>
+      <p class="onboarding-sub">Tell us your board and class so we can organize your chapters.</p>
+
+      <form id="onboarding-form" class="auth-form" novalidate>
+        <label class="field">
+          <span class="field-label">Board</span>
+          <select name="board" required>
+            <option value="">Select board</option>
+            <option value="CBSE">CBSE</option>
+            <option value="ICSE" disabled>ICSE (coming soon)</option>
+            <option value="State Board" disabled>State Board (coming soon)</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Class</span>
+          <select name="class" required>
+            <option value="">Select class</option>
+            <option value="10">Class 10</option>
+            <option value="9" disabled>Class 9 (coming soon)</option>
+            <option value="11" disabled>Class 11 (coming soon)</option>
+            <option value="12" disabled>Class 12 (coming soon)</option>
+          </select>
+        </label>
+
+        <p class="auth-error" id="onboarding-error" hidden></p>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="onboarding-submit">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main dashboard content: hidden until we know onboarding is complete -->
+  <section class="dashboard-content" id="dashboard-content" hidden>
+
+    <div class="welcome">
+      <h1 id="welcome-heading">Welcome back</h1>
+      <p id="welcome-date" class="welcome-date"></p>
+    </div>
+
+    <div class="carousel" id="carousel">
+      <div class="carousel-track" id="carousel-track"></div>
+      <button class="carousel-nav carousel-prev" id="carousel-prev" aria-label="Previous">‹</button>
+      <button class="carousel-nav carousel-next" id="carousel-next" aria-label="Next">›</button>
+      <div class="carousel-dots" id="carousel-dots"></div>
+    </div>
+
+    <div class="progress-strip">
+      <div class="stat">
+        <span class="stat-value">0</span>
+        <span class="stat-label">Day streak</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">0</span>
+        <span class="stat-label">Chapters done</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">0</span>
+        <span class="stat-label">Tests taken</span>
+      </div>
+    </div>
+
+    <section class="recent-section">
+      <h2 class="section-title-sm">Recent chapters</h2>
+      <p class="empty-state" id="recent-empty">You haven't opened any chapters yet — pick one below to get started.</p>
+    </section>
+
+    <section class="subjects-section">
+      <h2 class="section-title-sm">Your subjects</h2>
+      <div class="subjects-grid" id="subjects-grid"></div>
+    </section>
+
+  </section>
+</main>
+
+<script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
