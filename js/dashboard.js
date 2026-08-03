@@ -1,20 +1,7 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-
-// ---- DUMMY CURRICULUM ----
-// Placeholder only. Replace with real Firestore-backed curriculum
-// once the curriculum data model (Phase 4/5) is built.
-const DUMMY_CURRICULUM = {
-  subjects: [
-    { id: "science", name: "Science", chapters: ["Light", "Human Eye", "Electricity", "Carbon and its Compounds", "Life Processes"] },
-    { id: "maths", name: "Maths", chapters: ["Real Numbers", "Polynomials", "Triangles", "Circles", "Probability"] },
-    { id: "english", name: "English", chapters: ["A Letter to God", "Nelson Mandela", "Two Stories about Flying"] },
-    { id: "hindi", name: "Hindi", chapters: ["सूरदास", "तुलसीदास", "कबीर"] },
-    { id: "social-science", name: "Social Science", chapters: ["Nationalism in Europe", "Federalism", "Resources and Development"] },
-    { id: "ai", name: "Artificial Intelligence", chapters: ["Introduction to AI", "AI Ethics", "Data Literacy"] }
-  ]
-};
+import { DUMMY_CURRICULUM } from "./curriculum-dummy.js";
 
 const overlay = document.getElementById("onboarding-overlay");
 const content = document.getElementById("dashboard-content");
