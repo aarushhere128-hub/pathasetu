@@ -3,7 +3,7 @@
 // Chapter names for Hindi A/B are generic placeholders; swap in real chapter
 // titles when building the actual curriculum content.
 
-export const DUMMY_CURRICULUM = {
+export const curriculum = {
   subjects: [
     {
       id: "science",
