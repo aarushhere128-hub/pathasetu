@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Hub - PathaSetu</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/pages/chapter.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0B0F19',
+                        surface: 'rgba(255, 255, 255, 0.03)',
+                        surfaceBorder: 'rgba(255, 255, 255, 0.08)',
+                        primaryPurple: '#7C3AED',
+                        purpleHover: '#6D28D9',
+                        accentGold: '#F59E0B',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-primaryPurple selection:text-white bg-darkBg text-slate-100">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 glass-card border-b border-surfaceBorder px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="location.href='index.html'">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primaryPurple to-accentGold flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-primaryPurple/30">
+                🌉
+            </div>
+            <span class="text-xl font-bold tracking-tight text-white">Patha<span class="text-primaryPurple">Setu</span></span>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <button onclick="location.href='dashboard.html'" class="text-sm font-medium text-slate-300 hover:text-white transition">Dashboard</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8 flex flex-col space-y-6">
+        
+        <!-- BREADCRUMB NAVIGATION -->
+        <div id="breadcrumb" class="flex items-center space-x-2 text-sm text-slate-400">
+            <a href="dashboard.html" class="hover:text-white transition">Dashboard</a>
+            <span>/</span>
+            <span id="breadcrumb-subject" class="hover:text-white transition">Subject</span>
+            <span>/</span>
+            <span id="breadcrumb-chapter" class="text-primaryPurple font-semibold">Chapter</span>
+        </div>
+
+        <!-- CHAPTER HEADER BANNER -->
+        <div class="glass-card p-6 md:p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center relative overflow-hidden border border-surfaceBorder">
+            <div class="space-y-2">
+                <div class="flex items-center space-x-3">
+                    <span id="chapter-badge" class="bg-accentGold/10 text-accentGold border border-accentGold/20 text-xs px-2.5 py-1 rounded-full font-semibold">Chapter Hub</span>
+                    <span id="subject-tag" class="text-xs text-slate-400 uppercase tracking-wider font-medium">Subject</span>
+                </div>
+                <h1 id="chapter-title" class="text-2xl md:text-3xl font-extrabold text-white">Loading Chapter...</h1>
+                <p class="text-sm text-slate-400">Your unified workspace for NCERT materials, videos, personal notes, and AI assistance.</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex space-x-3">
+                <button onclick="switchTab('ainotes')" class="bg-primaryPurple hover:bg-purpleHover text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-primaryPurple/25 transition">⚡ Generate AI Notes</button>
+                <button onclick="openResourceModal()" class="glass-card hover:bg-white/5 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition border border-surfaceBorder">+ Add Resource</button>
+            </div>
+        </div>
+
+        <!-- WORKSPACE NAVIGATION TABS -->
+        <div class="flex space-x-2 border-b border-surfaceBorder pb-3 overflow-x-auto">
+            <button onclick="switchTab('resources')" id="tab-btn-resources" class="px-4 py-2.5 rounded-xl text-sm font-semibold bg-primaryPurple text-white transition whitespace-nowrap shadow-md shadow-primaryPurple/20">📚 Resources</button>
+            <button onclick="switchTab('ainotes')" id="tab-btn-ainotes" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition whitespace-nowrap">📝 AI Notes & Summary</button>
+            <button onclick="switchTab('chat')" id="tab-btn-chat" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition whitespace-nowrap">💬 AI Doubt Chat</button>
+            <button onclick="switchTab('revision')" id="tab-btn-revision" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition whitespace-nowrap">🔄 Spaced Repetition</button>
+        </div>
+
+        <!-- TAB CONTENT: RESOURCES -->
+        <div id="tab-resources" class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Saved Chapter Resources</h3>
+                <span id="resource-count" class="text-xs text-slate-400">0 items stored</span>
+            </div>
+            <div id="resources-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamically populated via js/chapter.js -->
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: AI NOTES -->
+        <div id="tab-ainotes" class="hidden glass-card p-6 md:p-8 rounded-2xl space-y-4 border border-surfaceBorder">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white flex items-center space-x-2"><span>⚡</span><span>AI Exam-Focused Summary</span></h3>
+                <button onclick="generateAiNotes()" class="bg-primaryPurple/20 text-primaryPurple hover:bg-primaryPurple/30 text-xs px-3 py-1.5 rounded-lg font-semibold transition border border-primaryPurple/30">Regenerate Notes</button>
+            </div>
+            <div id="ai-notes-content" class="space-y-3 text-sm text-slate-300 leading-relaxed">
+                <p class="text-slate-400 italic">Click generate above or select this chapter to automatically compile key definitions, formulas, and concepts.</p>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: AI CHAT -->
+        <div id="tab-chat" class="hidden glass-card p-6 rounded-2xl flex flex-col h-[500px] border border-surfaceBorder">
+            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
+                <div class="bg-primaryPurple/20 border border-primaryPurple/30 p-3.5 rounded-xl max-w-lg text-sm text-white">
+                    Hello! I am your AI study assistant for this chapter. Ask me to explain concepts, solve practice problems, or simplify tricky topics.
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <input type="text" id="chat-input" placeholder="Ask a doubt about this chapter..." class="flex-1 bg-surfaceBorder/40 border border-surfaceBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primaryPurple">
+                <button onclick="sendChatMessage()" class="bg-primaryPurple hover:bg-purpleHover text-white px-6 py-3 rounded-xl text-sm font-semibold shadow-lg shadow-primaryPurple/30 transition">Send</button>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: REVISION / SPACED REPETITION -->
+        <div id="tab-revision" class="hidden glass-card p-6 md:p-8 rounded-2xl space-y-4 border border-surfaceBorder">
+            <h3 class="text-lg font-bold text-white flex items-center space-x-2"><span>🔄</span><span>Spaced Repetition & Mistake Database</span></h3>
+            <p class="text-sm text-slate-400">Scheduled automated reviews based on your previous test performance to ensure long-term memory retention.</p>
+            <div class="bg-surfaceBorder/30 p-5 rounded-xl border border-surfaceBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h4 class="text-white font-semibold text-sm">Targeted Practice Quiz</h4>
+                    <span class="text-xs text-accentGold font-medium">Recommended review interval active</span>
+                </div>
+                <button onclick="alert('Adaptive test generator initialized for this chapter!')" class="bg-accentGold hover:bg-amber-600 text-darkBg font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-md shadow-accentGold/20">Start Review Session</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ADD RESOURCE MODAL -->
+    <div id="resourceModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 px-4">
+        <div class="glass-card p-8 rounded-2xl max-w-md w-full relative border border-surfaceBorder space-y-4">
+            <button onclick="closeResourceModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">✕</button>
+            <h3 class="text-xl font-bold text-white">Add Chapter Resource</h3>
+            <p class="text-xs text-slate-400">Link an NCERT PDF, YouTube lecture, educational website, or personal note.</p>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Resource Title</label>
+                    <input type="text" id="resTitle" placeholder="e.g., Ray Diagrams Walkthrough" class="w-full bg-surfaceBorder/40 border border-surfaceBorder rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primaryPurple">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Resource Type</label>
+                    <select id="resType" class="w-full bg-darkBg border border-surfaceBorder rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primaryPurple">
+                        <option value="pdf">📕 PDF / Document</option>
+                        <option value="youtube">▶️ YouTube Video</option>
+                        <option value="website">🌐 Educational Website</option>
+                        <option value="notes">📓 Personal Notes</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">URL or Link</label>
+                    <input type="url" id="resUrl" placeholder="https://..." class="w-full bg-surfaceBorder/40 border border-surfaceBorder rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primaryPurple">
+                </div>
+                <button onclick="saveNewResource()" class="w-full bg-primaryPurple hover:bg-purpleHover text-white py-3 rounded-xl font-semibold shadow-lg shadow-primaryPurple/30 transition mt-2">Add to Chapter Hub</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script type="module" src="js/chapter.js"></script>
+</body>
+</html>
