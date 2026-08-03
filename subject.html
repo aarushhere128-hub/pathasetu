@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subject — PathaSetu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/pages/subject.css">
+</head>
+<body>
+
+<header class="site-header dashboard-header">
+  <a href="index.html" class="logo">Patha<span>Setu</span></a>
+  <a href="dashboard.html" class="btn btn-ghost">← Dashboard</a>
+</header>
+
+<main class="subject-page">
+  <p class="breadcrumb" id="breadcrumb">CBSE · Class 10</p>
+  <h1 class="subject-title" id="subject-title">Loading…</h1>
+  <p class="subject-sub" id="subject-sub"></p>
+
+  <div class="chapters-list" id="chapters-list"></div>
+
+  <p class="empty-state" id="not-found" hidden>
+    We couldn't find that subject. <a href="dashboard.html">Go back to your dashboard</a>.
+  </p>
+</main>
+
+<script type="module" src="js/subject.js"></script>
+</body>
+</html>
