@@ -8,6 +8,11 @@ const content = document.getElementById("dashboard-content");
 const onboardingForm = document.getElementById("onboarding-form");
 const onboardingError = document.getElementById("onboarding-error");
 
+// Ensure db is loaded before proceeding
+if (!db) {
+  console.error("Critical Error: Firestore 'db' instance is undefined. Check firebase-config.js exports.");
+}
+
 // ---- Auth guard ----
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -15,55 +20,74 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  document.getElementById("welcome-heading").textContent =
-    `Welcome back, ${user.displayName || "there"}`;
-  document.getElementById("welcome-date").textContent =
-    new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  const welcomeHeading = document.getElementById("welcome-heading");
+  const welcomeDate = document.getElementById("welcome-date");
+  if (welcomeHeading) welcomeHeading.textContent = `Welcome back, ${user.displayName || "there"}`;
+  if (welcomeDate) welcomeDate.textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-  const data = snap.exists() ? snap.data() : {};
+  try {
+    // Line 33 equivalent check: Safe guard for doc/db reference
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    const data = snap.exists() ? snap.data() : {};
 
-  if (!data.board || !data.class) {
-    if (overlay) overlay.hidden = false;
-    onboardingForm.addEventListener("submit", (e) => handleOnboarding(e, userRef));
-  } else {
-    renderDashboard();
+    if (!data.board || !data.class) {
+      if (overlay) overlay.hidden = false;
+      if (onboardingForm) {
+        onboardingForm.addEventListener("submit", (e) => handleOnboarding(e, userRef));
+      }
+    } else {
+      renderDashboard();
+    }
+  } catch (err) {
+    console.error("Error checking user profile in Firestore:", err);
   }
 });
 
-document.getElementById("logout-btn").addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "index.html";
-});
+const logoutBtn = document.getElementById("logout-btn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
+}
 
 async function handleOnboarding(e, userRef) {
   e.preventDefault();
-  onboardingError.hidden = true;
+  if (onboardingError) onboardingError.hidden = true;
 
   const formData = new FormData(onboardingForm);
   const board = formData.get("board");
   const studentClass = formData.get("class");
 
   if (!board || !studentClass) {
-    onboardingError.textContent = "Please select both board and class.";
-    onboardingError.hidden = false;
+    if (onboardingError) {
+      onboardingError.textContent = "Please select both board and class.";
+      onboardingError.hidden = false;
+    }
     return;
   }
 
   const submitBtn = document.getElementById("onboarding-submit");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Saving…";
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Saving…";
+  }
 
   try {
     await setDoc(userRef, { board, class: studentClass }, { merge: true });
     if (overlay) overlay.hidden = true;
     renderDashboard();
   } catch (error) {
-    onboardingError.textContent = "Something went wrong. Please try again.";
-    onboardingError.hidden = false;
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Continue";
+    console.error("Onboarding save failed:", error);
+    if (onboardingError) {
+      onboardingError.textContent = "Something went wrong. Please try again.";
+      onboardingError.hidden = false;
+    }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Continue";
+    }
   }
 }
 
