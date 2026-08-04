@@ -306,14 +306,15 @@ window.sendChatMessage = async function() {
     const container = document.getElementById('chat-messages');
     if (!input || !container) return;
 
-    const text = input.value.trim();
+    const userText = input.value.trim();
     const chapterName = currentChapterData ? currentChapterData.name : 'this chapter';
+    const subjectName = currentSubjectData ? currentSubjectData.name : 'Science';
 
-    if (!text) return;
+    if (!userText) return;
 
     const userMsg = document.createElement('div');
     userMsg.className = 'bg-surfaceBorder/60 p-3.5 rounded-xl max-w-lg ml-auto text-sm text-white';
-    userMsg.innerText = text;
+    userMsg.innerText = userText;
     container.appendChild(userMsg);
 
     input.value = '';
@@ -327,27 +328,53 @@ window.sendChatMessage = async function() {
     container.appendChild(loadingMsg);
     container.scrollTop = container.scrollHeight;
 
-    setTimeout(() => {
+    try {
+        const response = await queryNcertKnowledge(subjectId, chapterSlug, userText);
+
         const loadEl = document.getElementById(loadingId);
         if (loadEl) loadEl.remove();
 
         const aiMsg = document.createElement('div');
         aiMsg.className = 'bg-primaryPurple/20 border border-primaryPurple/30 p-3.5 rounded-xl max-w-lg text-sm text-white space-y-2';
         
-        aiMsg.innerHTML = `
-            <div class="text-xs font-semibold text-accentGold uppercase tracking-wider flex items-center gap-1">
-                <span>🛡️ CBSE Board Verified Source</span>
-            </div>
-            <p class="text-xs italic text-slate-300 bg-black/20 p-2.5 rounded border-l-2 border-accentGold leading-relaxed">
-                "Concepts and terms specified in the official textbook must be adhered to for standard evaluation." <br>
-                <span class="text-primaryPurple font-medium not-italic mt-1 block">— NCERT Class 10 ${currentSubjectData ? currentSubjectData.name : 'Science'}, Chapter: ${chapterName}</span>
-            </p>
-            <div class="text-slate-200 text-xs leading-relaxed pt-1">
-                <strong class="text-white block mb-1">Board Breakdown & Syllabus Limit:</strong>
-                To score full marks in your board examinations, focus strictly on the core definitions outlined above without over-complicating with out-of-syllabus derivations.
-            </div>
-        `;
+        const isOutOfBounds = response.offTopic || false;
+
+        if (isOutOfBounds) {
+            aiMsg.innerHTML = `
+                <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                    <span>⚠️ Chapter Boundary Notice</span>
+                </div>
+                <p class="text-slate-200 text-xs leading-relaxed">
+                    You are currently studying <strong class="text-white">${chapterName}</strong> (${subjectName}). The concept you asked about belongs to a different chapter. Let's keep our focus locked on mastering board questions for this chapter first!
+                </p>
+            `;
+        } else {
+            aiMsg.innerHTML = `
+                <div class="text-xs font-semibold text-accentGold uppercase tracking-wider flex items-center gap-1">
+                    <span>🛡️ CBSE Board Verified Source</span>
+                </div>
+                <p class="text-xs italic text-slate-300 bg-black/20 p-2.5 rounded border-l-2 border-accentGold leading-relaxed">
+                    "${response.text || 'Concepts and terms specified in the official textbook must be adhered to for standard evaluation.'}" <br>
+                    <span class="text-primaryPurple font-medium not-italic mt-1 block">— NCERT Class 10 ${subjectName}, Chapter: ${chapterName}</span>
+                </p>
+                <div class="text-slate-200 text-xs leading-relaxed pt-1">
+                    <strong class="text-white block mb-1">Board Breakdown & Syllabus Limit:</strong>
+                    Focus strictly on the core definitions outlined above to secure full marks in your board examinations.
+                </div>
+            `;
+        }
+
         container.appendChild(aiMsg);
         container.scrollTop = container.scrollHeight;
-    }, 1000);
+
+    } catch (error) {
+        console.error("Chat error:", error);
+        const loadEl = document.getElementById(loadingId);
+        if (loadEl) loadEl.remove();
+        
+        const errMsg = document.createElement('div');
+        errMsg.className = 'bg-red-500/10 border border-red-500/20 p-3.5 rounded-xl max-w-lg text-sm text-red-300';
+        errMsg.innerText = "Unable to fetch textbook context right now. Please try again.";
+        container.appendChild(errMsg);
+    }
 }
