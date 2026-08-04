@@ -1,29 +1,36 @@
 import { curriculum } from './curriculum-dummy.js';
+import { db, auth } from './firebase-config.js';
+import { collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+// Parse query parameters from URL
 const urlParams = new URLSearchParams(window.location.search);
 const subjectId = urlParams.get('subject');
 const chapterSlug = urlParams.get('chapter');
 
+let currentSubjectData = null;
 let currentChapterData = null;
 let chapterResources = [];
+let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadChapterDetails();
-    fetchChapterResources();
+    
+    // Listen for authentication state changes before fetching data from Firestore
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        fetchChapterResources();
+    });
 });
 
 function loadChapterDetails() {
-    // Find the subject inside the subjects array
-    const subjectData = curriculum.subjects.find(s => s.id === subjectId);
-    if (!subjectData) {
+    currentSubjectData = curriculum.subjects.find(s => s.id === subjectId);
+    if (!currentSubjectData) {
         document.getElementById('chapter-title').innerText = "Subject Not Found";
         return;
     }
 
-    // Convert chapter name strings into slugs for comparison if needed, 
-    // or match directly with the chapter name/slug
-    const chapterNameDecoded = decodeURIComponent(chapterSlug).replace(/-/g, ' ');
-    const chapterDataName = subjectData.chapters.find(c => 
+    const chapterDataName = currentSubjectData.chapters.find(c => 
         c.toLowerCase().replace(/[^a-z0-9]+/g, '-') === chapterSlug || c === chapterSlug
     );
 
@@ -34,34 +41,49 @@ function loadChapterDetails() {
 
     currentChapterData = {
         name: chapterDataName,
-        id: subjectData.chapters.indexOf(chapterDataName) + 1
+        id: currentSubjectData.chapters.indexOf(chapterDataName) + 1,
+        slug: chapterSlug
     };
 
     // Update Breadcrumbs and Headers
-    document.getElementById('breadcrumb-subject').innerText = subjectData.name;
+    document.getElementById('breadcrumb-subject').innerText = currentSubjectData.name;
     document.getElementById('breadcrumb-subject').href = `subject.html?subject=${subjectId}`;
     document.getElementById('breadcrumb-chapter').innerText = currentChapterData.name;
     
-    document.getElementById('subject-tag').innerText = subjectData.name;
+    document.getElementById('subject-tag').innerText = currentSubjectData.name;
     document.getElementById('chapter-title').innerText = currentChapterData.name;
     document.getElementById('chapter-badge').innerText = `Chapter ${currentChapterData.id}`;
     document.title = `${currentChapterData.name} - PathaSetu`;
 }
 
-// ... rest of your chapter.js functions remain the same ...
-
-// Fetch resources for this specific chapter (Firestore integration point)
+// Fetch resources for this specific chapter from Firestore
 async function fetchChapterResources() {
-    // Default fallback resources if custom ones aren't added yet
+    // Default fallback resources if user has none saved yet
     chapterResources = [
-        { title: `NCERT Textbook: ${currentChapterData ? currentChapterData.name : 'Chapter'}`, type: 'pdf', url: '#' },
-        { title: 'Curated Conceptual Video Walkthrough', type: 'youtube', url: '#' },
-        { title: 'Class Handwritten Notes Scan', type: 'notes', url: '#' }
+        { id: 'default-1', title: `NCERT Textbook: ${currentChapterData ? currentChapterData.name : 'Chapter'}`, type: 'pdf', url: '#' },
+        { id: 'default-2', title: 'Curated Conceptual Video Walkthrough', type: 'youtube', url: '#' },
+        { id: 'default-3', title: 'Class Handwritten Notes Scan', type: 'notes', url: '#' }
     ];
 
-    // TODO: When user is authenticated, fetch from Firestore path:
-    // /users/{userId}/subjects/{subjectId}/chapters/{chapterSlug}/resources
-    
+    if (!currentUser) {
+        renderResources();
+        return;
+    }
+
+    try {
+        const resourcesRef = collection(db, `users/${currentUser.uid}/subjects/${subjectId}/chapters/${chapterSlug}/resources`);
+        const snapshot = await getDocs(resourcesRef);
+        
+        if (!snapshot.empty) {
+            chapterResources = [];
+            snapshot.forEach(docSnap => {
+                chapterResources.push({ id: docSnap.id, ...docSnap.data() });
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching resources from Firestore:", error);
+    }
+
     renderResources();
 }
 
@@ -96,7 +118,7 @@ function renderResources() {
     countEl.innerText = `${chapterResources.length} items stored`;
     grid.innerHTML = '';
 
-    chapterResources.forEach((res, index) => {
+    chapterResources.forEach((res) => {
         let icon = '📕';
         let badgeClass = 'bg-red-500/10 text-red-400';
         let typeLabel = 'PDF';
@@ -128,7 +150,7 @@ function renderResources() {
             </div>
             <div class="flex justify-between items-center pt-3 border-t border-surfaceBorder">
                 <a href="${res.url}" target="_blank" class="text-xs text-primaryPurple font-semibold hover:underline">Access Resource →</a>
-                <button onclick="deleteResource(${index})" class="text-xs text-slate-500 hover:text-red-400 transition">Delete</button>
+                <button onclick="deleteResource('${res.id}')" class="text-xs text-slate-500 hover:text-red-400 transition">Delete</button>
             </div>
         `;
         grid.appendChild(card);
@@ -146,7 +168,7 @@ window.closeResourceModal = function() {
     document.getElementById('resourceModal').classList.remove('flex');
 }
 
-window.saveNewResource = function() {
+window.saveNewResource = async function() {
     const title = document.getElementById('resTitle').value.trim();
     const type = document.getElementById('resType').value;
     const url = document.getElementById('resUrl').value.trim() || '#';
@@ -156,7 +178,24 @@ window.saveNewResource = function() {
         return;
     }
 
-    chapterResources.push({ title, type, url });
+    const newResource = { title, type, url, createdAt: new Date().toISOString() };
+
+    try {
+        if (currentUser) {
+            const docRef = await addDoc(
+                collection(db, `users/${currentUser.uid}/subjects/${subjectId}/chapters/${chapterSlug}/resources`), 
+                newResource
+            );
+            newResource.id = docRef.id;
+        } else {
+            newResource.id = 'local-' + Date.now();
+        }
+    } catch (e) {
+        console.error("Error saving resource to Firestore: ", e);
+        newResource.id = 'local-' + Date.now();
+    }
+
+    chapterResources.push(newResource);
     renderResources();
     closeResourceModal();
 
@@ -165,12 +204,20 @@ window.saveNewResource = function() {
     document.getElementById('resUrl').value = '';
 }
 
-window.deleteResource = function(index) {
-    chapterResources.splice(index, 1);
+window.deleteResource = async function(resourceId) {
+    try {
+        if (currentUser && !resourceId.startsWith('default-') && !resourceId.startsWith('local-')) {
+            await deleteDoc(doc(db, `users/${currentUser.uid}/subjects/${subjectId}/chapters/${chapterSlug}/resources`, resourceId));
+        }
+    } catch (e) {
+        console.error("Error deleting document from Firestore: ", e);
+    }
+
+    chapterResources = chapterResources.filter(r => r.id !== resourceId);
     renderResources();
 }
 
-// Dynamic AI Notes Generator per Chapter
+// Dynamic AI Notes Generator
 window.generateAiNotes = function() {
     const container = document.getElementById('ai-notes-content');
     const chapterName = currentChapterData ? currentChapterData.name : 'this chapter';
@@ -196,7 +243,6 @@ window.sendChatMessage = function() {
 
     if(!text) return;
 
-    // User message
     const userMsg = document.createElement('div');
     userMsg.className = 'bg-surfaceBorder/60 p-3.5 rounded-xl max-w-lg ml-auto text-sm text-white';
     userMsg.innerText = text;
@@ -205,7 +251,6 @@ window.sendChatMessage = function() {
     input.value = '';
     container.scrollTop = container.scrollHeight;
 
-    // Contextual AI Response simulation
     setTimeout(() => {
         const aiMsg = document.createElement('div');
         aiMsg.className = 'bg-primaryPurple/20 border border-primaryPurple/30 p-3.5 rounded-xl max-w-lg text-sm text-white';
