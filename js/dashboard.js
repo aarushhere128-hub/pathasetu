@@ -37,8 +37,8 @@ onAuthStateChanged(auth, async (user) => {
 
     if (!data.board || !data.class) {
       if (overlay) overlay.hidden = false;
-      if (onboardingForm) {
-        onboardingForm.removeEventListener("submit", handleOnboarding); // prevent duplicate bindings
+      if (onboardingForm && !onboardingForm.dataset.bound) {
+        onboardingForm.dataset.bound = "true"; // Prevents duplicate binding
         onboardingForm.addEventListener("submit", (e) => handleOnboarding(e, userRef));
       }
     } else {
