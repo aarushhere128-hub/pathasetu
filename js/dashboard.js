@@ -1,7 +1,7 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-import { DUMMY_CURRICULUM } from "./curriculum-dummy.js";
+import { curriculum } from "./curriculum-dummy.js";
 
 const overlay = document.getElementById("onboarding-overlay");
 const content = document.getElementById("dashboard-content");
@@ -75,7 +75,7 @@ function renderDashboard() {
 
 // ---- Carousel ----
 function buildCarousel() {
-  const allChapters = DUMMY_CURRICULUM.subjects.flatMap((s) => s.chapters);
+  const allChapters = curriculum.subjects.flatMap((s) => s.chapters);
   const randomChapter = allChapters[Math.floor(Math.random() * allChapters.length)];
 
   const cards = [
@@ -159,7 +159,7 @@ function buildSubjectsGrid() {
   const grid = document.getElementById("subjects-grid");
   grid.innerHTML = "";
 
-  DUMMY_CURRICULUM.subjects.forEach((subject) => {
+  curriculum.subjects.forEach((subject) => {
     const card = document.createElement("a");
     card.className = "subject-card";
     card.href = `subject.html?subject=${subject.id}`;
