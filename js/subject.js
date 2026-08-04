@@ -1,6 +1,6 @@
 import { auth } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-import { DUMMY_CURRICULUM } from "./curriculum-dummy.js";
+import { curriculum } from "./curriculum-dummy.js";
 
 // Auth guard — same pattern as dashboard.js
 onAuthStateChanged(auth, (user) => {
@@ -15,7 +15,7 @@ function renderSubject() {
   const params = new URLSearchParams(window.location.search);
   const subjectId = params.get("subject");
 
-  const subject = DUMMY_CURRICULUM.subjects.find((s) => s.id === subjectId);
+  const subject = curriculum.subjects.find((s) => s.id === subjectId);
 
   const titleEl = document.getElementById("subject-title");
   const subEl = document.getElementById("subject-sub");
