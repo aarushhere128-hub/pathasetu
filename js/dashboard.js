@@ -26,7 +26,11 @@ onAuthStateChanged(auth, async (user) => {
   if (welcomeDate) welcomeDate.textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 
   try {
-    // Line 33 equivalent check: Safe guard for doc/db reference
+    // Ensure db is valid before creating reference
+    if (!db) {
+      throw new Error("Firestore 'db' instance is undefined. Check firebase-config.js.");
+    }
+
     const userRef = doc(db, "users", user.uid);
     const snap = await getDoc(userRef);
     const data = snap.exists() ? snap.data() : {};
@@ -34,6 +38,7 @@ onAuthStateChanged(auth, async (user) => {
     if (!data.board || !data.class) {
       if (overlay) overlay.hidden = false;
       if (onboardingForm) {
+        onboardingForm.removeEventListener("submit", handleOnboarding); // prevent duplicate bindings
         onboardingForm.addEventListener("submit", (e) => handleOnboarding(e, userRef));
       }
     } else {
