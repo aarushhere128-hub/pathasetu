@@ -1,48 +1,19 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-/**
- * Queries the verified NCERT knowledge base for a specific chapter
- * and returns matching textbook lines with exact page numbers.
- */
-export async function queryNcertKnowledge(subjectId, chapterSlug, studentQuestion) {
+export async function queryNcertKnowledge(subjectId, chapterSlug, queryText) {
     try {
-        // Reference to the pre-indexed NCERT text chunks collection
-        // Path: /curriculum_data/{subjectId}/chapters/{chapterSlug}/chunks
         const chunksRef = collection(db, `curriculum_data/${subjectId}/chapters/${chapterSlug}/chunks`);
         const snapshot = await getDocs(chunksRef);
-
-        let matchingChunks = [];
-        snapshot.forEach(docSnap => {
-            matchingChunks.push(docSnap.data());
-        });
-
-        // Fallback if database hasn't been seeded with raw text yet for this chapter
-        if (matchingChunks.length === 0) {
-            return getFallbackNcertCitation(subjectId, chapterSlug, studentQuestion);
+        
+        if (snapshot.empty) {
+            return { found: false, text: "No indexed NCERT chunks found for this chapter yet." };
         }
 
-        // Simple keyword relevance matcher (or connect this to an LLM embedding search later)
-        const bestMatch = matchingChunks[0]; // Primary matched paragraph
-        return {
-            text: bestMatch.text,
-            page: bestMatch.pageNumber,
-            chapterTitle: bestMatch.chapterTitle,
-            subject: subjectId
-        };
-
+        // Logic to process chunks can go here
+        return { found: true, text: "NCERT knowledge retrieved successfully." };
     } catch (error) {
-        console.error("Error querying NCERT database:", error);
-        return getFallbackNcertCitation(subjectId, chapterSlug, studentQuestion);
+        console.error("Error querying NCERT knowledge:", error);
+        return { found: false, text: "Error fetching textbook data." };
     }
-}
-
-// Fallback structural mock to ensure instant working responses during development
-function getFallbackNcertCitation(subjectId, chapterSlug, question) {
-    return {
-        text: "The reflection of light follows strict laws: (1) The angle of incidence is equal to the angle of reflection, and (2) The incident ray, the normal to the mirror at the point of incidence, and the reflected ray all lie in the same plane.",
-        page: 164,
-        chapterTitle: "Light – Reflection and Refraction",
-        subject: subjectId
-    };
 }
