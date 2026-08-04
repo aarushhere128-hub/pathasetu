@@ -25,7 +25,7 @@ onAuthStateChanged(auth, async (user) => {
   const data = snap.exists() ? snap.data() : {};
 
   if (!data.board || !data.class) {
-    overlay.hidden = false;
+    if (overlay) overlay.hidden = false;
     onboardingForm.addEventListener("submit", (e) => handleOnboarding(e, userRef));
   } else {
     renderDashboard();
@@ -57,7 +57,7 @@ async function handleOnboarding(e, userRef) {
 
   try {
     await setDoc(userRef, { board, class: studentClass }, { merge: true });
-    overlay.hidden = true;
+    if (overlay) overlay.hidden = true;
     renderDashboard();
   } catch (error) {
     onboardingError.textContent = "Something went wrong. Please try again.";
@@ -68,7 +68,7 @@ async function handleOnboarding(e, userRef) {
 }
 
 function renderDashboard() {
-  content.hidden = false;
+  if (content) content.hidden = false;
   buildCarousel();
   buildSubjectsGrid();
 }
@@ -98,6 +98,8 @@ function buildCarousel() {
 
   const track = document.getElementById("carousel-track");
   const dotsWrap = document.getElementById("carousel-dots");
+  if (!track || !dotsWrap) return;
+
   track.innerHTML = "";
   dotsWrap.innerHTML = "";
 
@@ -130,17 +132,20 @@ function buildCarousel() {
     update();
   }
 
-  document.getElementById("carousel-prev").onclick = () => goToSlide(index - 1);
-  document.getElementById("carousel-next").onclick = () => goToSlide(index + 1);
+  const prevBtn = document.getElementById("carousel-prev");
+  const nextBtn = document.getElementById("carousel-next");
+  if (prevBtn) prevBtn.onclick = () => goToSlide(index - 1);
+  if (nextBtn) nextBtn.onclick = () => goToSlide(index + 1);
 
   let autoplay = setInterval(() => goToSlide(index + 1), 5000);
   const carousel = document.getElementById("carousel");
-  carousel.addEventListener("mouseenter", () => clearInterval(autoplay));
-  carousel.addEventListener("mouseleave", () => {
-    autoplay = setInterval(() => goToSlide(index + 1), 5000);
-  });
+  if (carousel) {
+    carousel.addEventListener("mouseenter", () => clearInterval(autoplay));
+    carousel.addEventListener("mouseleave", () => {
+      autoplay = setInterval(() => goToSlide(index + 1), 5000);
+    });
+  }
 
-  // Basic swipe support
   let touchStartX = 0;
   track.addEventListener("touchstart", (e) => {
     touchStartX = e.touches[0].clientX;
@@ -157,6 +162,7 @@ function buildCarousel() {
 // ---- Subjects grid ----
 function buildSubjectsGrid() {
   const grid = document.getElementById("subjects-grid");
+  if (!grid) return;
   grid.innerHTML = "";
 
   curriculum.subjects.forEach((subject) => {
