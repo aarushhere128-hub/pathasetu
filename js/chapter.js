@@ -1,8 +1,8 @@
 import { curriculum } from './curriculum-dummy.js';
 import { db, auth, storage } from './firebase-config.js';
-import { collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
 import { queryNcertKnowledge } from './ai-engine.js';
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -57,7 +57,6 @@ function loadChapterDetails() {
     document.title = `${currentChapterData.name} - PathaSetu`;
 }
 
-// Fetch mistakes/spaced repetition items for this chapter
 async function fetchChapterMistakes() {
     chapterMistakes = [
         { id: 'm-1', concept: 'Sign convention for concave mirrors (Real vs. Virtual image coordinates)', status: 'Needs Review', nextReview: 'Today' }
@@ -85,7 +84,6 @@ async function fetchChapterMistakes() {
     renderMistakes();
 }
 
-// Render Revision & Mistake Cards
 function renderMistakes() {
     const container = document.getElementById('revision-container');
     if (!container) return;
